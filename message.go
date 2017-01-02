@@ -287,8 +287,11 @@ func (m *Message) Bytes() []byte {
 
 	if len(m.Params) > 0 {
 		buffer.WriteByte(space)
-		buffer.WriteByte(prefix)
-		buffer.WriteString(m.Trailing())
+		trailing := m.Trailing()
+		if len(trailing) < 1 || strings.Contains(trailing, " ") || trailing[0] == ':' {
+			buffer.WriteByte(prefix)
+		}
+		buffer.WriteString(trailing)
 	}
 
 	// We need the limit the buffer length.
